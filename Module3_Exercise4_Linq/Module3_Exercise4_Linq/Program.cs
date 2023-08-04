@@ -162,4 +162,205 @@ internal class Program
             ID: 4, Name: David, Age: 23, Grade: C
          */
     }
+
+    public static void LinqMethod4()
+    {
+        List<object> mixedList = new List<object>
+        {
+            1, 2, 3.14, "Hello", 5, "World"
+        };
+
+        // Example 1: Aggregate
+        int sum = mixedList.OfType<int>().Aggregate((acc, num) => acc + num);
+        Console.WriteLine("Sum of integers: " + sum);
+
+        // Example 2: Cast
+        List<int> intList = mixedList.Cast<int>().ToList();
+        Console.WriteLine("\nCasted integer list:");
+        foreach (var num in intList)
+        {
+            Console.WriteLine(num);
+        }
+
+        // Example 3: Reverse
+        var reversedList = mixedList.AsEnumerable().Reverse();
+        Console.WriteLine("\nReversed list:");
+        foreach (var item in reversedList)
+        {
+            Console.WriteLine(item);
+        }
+
+        // Example 4: OfType
+        var stringList = mixedList.OfType<string>();
+        Console.WriteLine("\nString elements:");
+        foreach (var str in stringList)
+        {
+            Console.WriteLine(str);
+        }
+
+        List<int> numbers1 = new List<int> { 1, 2, 3 };
+        List<int> numbers2 = new List<int> { 4, 5, 6 };
+
+        // Example 5: Concat
+        var combinedList = numbers1.Concat(numbers2);
+        Console.WriteLine("\nConcatenated list:");
+        foreach (var num in combinedList)
+        {
+            Console.WriteLine(num);
+        }
+
+        // Example 6: Zip
+        var zippedList = numbers1.Zip(numbers2, (num1, num2) => num1 + num2);
+        Console.WriteLine("\nZipped list:");
+        foreach (var num in zippedList)
+        {
+            Console.WriteLine(num);
+        }
+    }
+
+    public static void LinqMethod5()
+    {
+        // Example 1: Empty
+        var emptyList = Enumerable.Empty<int>();
+        Console.WriteLine("Empty List:");
+        foreach (var item in emptyList)
+        {
+            Console.WriteLine(item); // No output since the list is empty
+        }
+
+        // Example 2: Range
+        var rangeList = Enumerable.Range(1, 5);
+        Console.WriteLine("\nRange List:");
+        foreach (var num in rangeList)
+        {
+            Console.WriteLine(num);
+        }
+
+        // Example 3: Repeat
+        var repeatList = Enumerable.Repeat("Hello", 3);
+        Console.WriteLine("\nRepeat List:");
+        foreach (var str in repeatList)
+        {
+            Console.WriteLine(str);
+        }
+
+        List<int> numbers = new List<int> { 1, 2, 3 };
+
+        // Example 4: Append
+        var appendedList = numbers.Append(4);
+        Console.WriteLine("\nAppended List:");
+        foreach (var num in appendedList)
+        {
+            Console.WriteLine(num);
+        }
+    }
+
+    public static void LinqLazy()
+    {
+        List<int> numbers = new List<int> { 1, 2, 3, 4, 5 };
+
+        // Example 1: Lazy Evaluation
+        IEnumerable<int> query = numbers.Where(n => n % 2 == 0);
+
+        query.Append(30);
+
+        Console.WriteLine("Query created, but not executed yet.");
+
+        // Now, let's enumerate the results
+        foreach (var num in query)
+        {
+            Console.WriteLine("Result: " + num);
+        }
+
+        Console.WriteLine("1 -- Query executed and enumerated.");
+
+        query.Append(99);
+
+        foreach (var num in query)
+        {
+            Console.WriteLine("Result: " + num);
+        }
+
+        Console.WriteLine("2 -- Query executed and enumerated.");
+    }
+
+    public static void LinqSets()
+    {
+        List<int> numbers1 = new List<int> { 1, 2, 3, 4, 5 };
+        List<int> numbers2 = new List<int> { 4, 5, 6, 7, 8 };
+
+        // Example 1: Except
+        var exceptResult = numbers1.Except(numbers2);
+        Console.WriteLine("Elements in numbers1 but not in numbers2:");
+        foreach (var num in exceptResult)
+        {
+            Console.WriteLine(num);
+        }
+
+        // Example 2: Intersect
+        var intersectResult = numbers1.Intersect(numbers2);
+        Console.WriteLine("\nCommon elements in numbers1 and numbers2:");
+        foreach (var num in intersectResult)
+        {
+            Console.WriteLine(num);
+        }
+
+        // Example 3: Union
+        var unionResult = numbers1.Union(numbers2);
+        Console.WriteLine("\nUnion of numbers1 and numbers2 (without duplicates):");
+        foreach (var num in unionResult)
+        {
+            Console.WriteLine(num);
+        }
+    }
+
+    public static void LinqJoin()
+    {
+        List<Person> people = new List<Person>
+        {
+            new Person { Id = 1, Name = "Alice" },
+            new Person { Id = 2, Name = "Bob" },
+            new Person { Id = 3, Name = "Charlie" }
+        };
+
+        List<Grade> grades = new List<Grade>
+        {
+            new Grade { Id = 1, GradeLetter = "A" },
+            new Grade { Id = 2, GradeLetter = "B" },
+            new Grade { Id = 3, GradeLetter = "A" },
+            new Grade { Id = 5, GradeLetter = "C" }
+        };
+
+        // Example 4: Join
+        var joinedResult = people.Join(grades,
+            person => person.Id,
+            grade => grade.Id,
+            (person, grade) => new
+            {
+                person.Name,
+                grade.GradeLetter
+            });
+
+        Console.WriteLine("\nJoined result:");
+        foreach (var result in joinedResult)
+        {
+            Console.WriteLine($"Name: {result.Name}, Grade: {result.GradeLetter}");
+        }
+
+        // Example 5: Join Typed
+        IEnumerable<GradePerson> joinedTypedResult = people.Join(grades,
+            person => person.Id,
+            grade => grade.Id,
+            (person, grade) => new GradePerson 
+            {
+                Name = person.Name,
+                GradeLetter = grade.GradeLetter
+            });
+
+        Console.WriteLine("\nJoined Typed result:");
+        foreach (var result in joinedTypedResult)
+        {
+            Console.WriteLine($"Name: {result.Name}, Grade: {result.GradeLetter}");
+        }
+    }
 }

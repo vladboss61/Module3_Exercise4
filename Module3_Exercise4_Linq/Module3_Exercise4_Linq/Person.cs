@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Module3_Exercise4_Linq;
 
-public sealed class Student
+public sealed class Person
 {
     public int Id { get; set; }
+
     public string Name { get; set; }
-    public int Age { get; set; }
-    public string Grade { get; set; }
 }
