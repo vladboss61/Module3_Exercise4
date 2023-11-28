@@ -4,19 +4,37 @@ using System.Linq;
 
 namespace Module3_Exercise4_Linq;
 
+public static class NewStringMethods
+{
+    public static string Capitalize(this string str)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            return str;
+        }
+        
+        char[] chars = str.ToCharArray();
+        chars[0] = char.ToUpper(chars[0]);
+        return new string(chars);
+    }
+}
+
 internal class Program
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        LinqMethods1();
     }
 
     public static void LinqMethods1()
     {
-        List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        List<int> numbers = new List<int> { 5, 3, 1, 4, 6, 7, 8, 9, 10 };
 
         // Example 1: Where
-        var evenNumbers = numbers.Where(n => n % 2 == 0);
+        IEnumerable<string> evenNumbers = numbers
+                            .Where(n => n % 2 == 0)
+                            .Select(x => $"x = {x}");
+
         Console.WriteLine("Even numbers:");
         foreach (var num in evenNumbers)
         {
@@ -30,17 +48,27 @@ internal class Program
         {
             Console.WriteLine(num);
         }
+        int[] array = numbers.ToArray();
+        Array.Sort(array);
 
         // Example 3: OrderBy
-        var orderedNumbers = numbers.OrderBy(n => n);
+        IEnumerable<int> orderedNumbers = numbers.OrderByDescending(n => n);
+        Console.WriteLine("\n numbers:");
+
+        foreach (var num in numbers)
+        {
+            Console.WriteLine(num);
+        }
+
         Console.WriteLine("\nOrdered numbers:");
+
         foreach (var num in orderedNumbers)
         {
             Console.WriteLine(num);
         }
 
         // Example 4: Average
-        double average = numbers.Average();
+        double average = numbers.Select(x => x * 10).Average();
         Console.WriteLine("\nAverage: " + average);
 
         // Example 5: Sum
@@ -48,15 +76,15 @@ internal class Program
         Console.WriteLine("\nSum: " + sum);
 
         // Example 6: First
-        int firstElement = numbers.First();
+        int firstElement = numbers.First( x => x > 7);
         Console.WriteLine("\nFirst element: " + firstElement);
 
         // Example 7: Last
-        int lastElement = numbers.Last();
+        int lastElement = numbers.Last(x => x % 2 == 1);
         Console.WriteLine("\nLast element: " + lastElement);
 
         // Example 8: Any
-        bool anyEven = numbers.Any(n => n % 2 == 0);
+        bool anyEven = numbers.Any();
         Console.WriteLine("\nAny even numbers? " + anyEven);
 
         // Example 9: All
@@ -73,7 +101,7 @@ internal class Program
         List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
         // Example 1: Take
-        var firstThreeNumbers = numbers.Take(3);
+        IEnumerable<int> firstThreeNumbers = numbers.Take(3);
         Console.WriteLine("First three numbers:");
         foreach (var num in firstThreeNumbers)
         {
@@ -81,7 +109,7 @@ internal class Program
         }
 
         // Example 2: TakeWhile
-        var numbersLessThanFive = numbers.TakeWhile(n => n < 5);
+        IEnumerable<int> numbersLessThanFive = numbers.TakeWhile(n => n < 5);
         Console.WriteLine("\nNumbers less than five:");
         foreach (var num in numbersLessThanFive)
         {
@@ -132,7 +160,6 @@ internal class Program
             .OrderBy(s => s.Grade)
             .ToArray(); // Primary sort by Grade
 
-
         Console.WriteLine("Sorted with Then students:");
         foreach (var student in sortedStudents)
         {
@@ -143,7 +170,7 @@ internal class Program
 
         // Example: OrderBy and ThenBy
         var sortedThenStudents = students
-            .OrderBy(s => s.Grade)         // Primary sort by Grade
+            .OrderBy(s => s.Grade) // Primary sort by Grade
             .ThenByDescending(s => s.Age)
             .ToArray(); // Secondary sort by Age in descending order
 
@@ -171,16 +198,25 @@ internal class Program
         };
 
         // Example 1: Aggregate
-        int sum = mixedList.OfType<int>().Aggregate((acc, num) => acc + num);
+        int sum = mixedList.OfType<int>()
+            .Aggregate((accumulate, number) => accumulate + number);
+
+        // 10 20 31 41 51 61
+        // 10 + 20 = 30 // 1
+        // 30 + 31 = 61 // 2
+        // 61 + 41 = 102 // 3
+        // 102 + 51 = 153 // 4
+        // 153 + 61 = 214 // 5
+
         Console.WriteLine("Sum of integers: " + sum);
 
-        // Example 2: Cast
-        List<int> intList = mixedList.Cast<int>().ToList();
-        Console.WriteLine("\nCasted integer list:");
-        foreach (var num in intList)
-        {
-            Console.WriteLine(num);
-        }
+        //// Example 2: Cast
+        //List<int> intList = mixedList.Cast<int>().ToList();
+        //Console.WriteLine("\nCasted integer list:");
+        //foreach (var num in intList)
+        //{
+        //    Console.WriteLine(num);
+        //}
 
         // Example 3: Reverse
         var reversedList = mixedList.AsEnumerable().Reverse();
@@ -211,6 +247,10 @@ internal class Program
 
         // Example 6: Zip
         var zippedList = numbers1.Zip(numbers2, (num1, num2) => num1 + num2);
+        // 1 4 = 5
+        // 2 5 = 7
+        // 3 6 = 9
+
         Console.WriteLine("\nZipped list:");
         foreach (var num in zippedList)
         {
@@ -229,7 +269,7 @@ internal class Program
         }
 
         // Example 2: Range
-        var rangeList = Enumerable.Range(1, 5);
+        var rangeList = Enumerable.Range(7, 10);
         Console.WriteLine("\nRange List:");
         foreach (var num in rangeList)
         {
@@ -247,7 +287,7 @@ internal class Program
         List<int> numbers = new List<int> { 1, 2, 3 };
 
         // Example 4: Append
-        var appendedList = numbers.Append(4);
+        IEnumerable<int> appendedList = numbers.Append(4);
         Console.WriteLine("\nAppended List:");
         foreach (var num in appendedList)
         {
@@ -260,9 +300,12 @@ internal class Program
         List<int> numbers = new List<int> { 1, 2, 3, 4, 5 };
 
         // Example 1: Lazy Evaluation
-        IEnumerable<int> query = numbers.Where(n => n % 2 == 0);
+        List<int> query = numbers.Where(n =>
+        {
+            return n % 2 == 0;
+        }).ToList();
 
-        query.Append(30);
+        numbers.Add(30);
 
         Console.WriteLine("Query created, but not executed yet.");
 
@@ -274,7 +317,7 @@ internal class Program
 
         Console.WriteLine("1 -- Query executed and enumerated.");
 
-        query.Append(99);
+        numbers.Add(99);
 
         foreach (var num in query)
         {
@@ -286,11 +329,11 @@ internal class Program
 
     public static void LinqSets()
     {
-        List<int> numbers1 = new List<int> { 1, 2, 3, 4, 5 };
-        List<int> numbers2 = new List<int> { 4, 5, 6, 7, 8 };
+        List<int> numbers1 = new List<int> { 1, 2, 3, 4, 5, 5, 5 };
+        List<int> numbers2 = new List<int> { 4, 5, 6, 7, 7, 8, 8 };
 
         // Example 1: Except
-        var exceptResult = numbers1.Except(numbers2);
+        var exceptResult = numbers2.Except(numbers1);
         Console.WriteLine("Elements in numbers1 but not in numbers2:");
         foreach (var num in exceptResult)
         {
@@ -312,6 +355,13 @@ internal class Program
         {
             Console.WriteLine(num);
         }
+        List<int> numbers3 = new List<int> { 3, 3, 44, 44, 5, 6, 7, 7, 8, 8 };
+        Console.WriteLine("Unique numbers:");
+        var distinctNumbers = numbers3.Distinct();
+        foreach (var item in distinctNumbers)
+        {
+            Console.WriteLine(item);
+        }
     }
 
     public static void LinqJoin()
@@ -320,14 +370,15 @@ internal class Program
         {
             new Person { Id = 1, Name = "Alice" },
             new Person { Id = 2, Name = "Bob" },
-            new Person { Id = 3, Name = "Charlie" }
+            new Person { Id = 3, Name = "Charlie" },
+            new Person { Id = 3, Name = "Den" }
         };
 
         List<Grade> grades = new List<Grade>
         {
             new Grade { Id = 1, GradeLetter = "A" },
             new Grade { Id = 2, GradeLetter = "B" },
-            new Grade { Id = 3, GradeLetter = "A" },
+            new Grade { Id = 3, GradeLetter = "A+" },
             new Grade { Id = 5, GradeLetter = "C" }
         };
 
@@ -351,7 +402,7 @@ internal class Program
         IEnumerable<GradePerson> joinedTypedResult = people.Join(grades,
             person => person.Id,
             grade => grade.Id,
-            (person, grade) => new GradePerson 
+            (person, grade) => new GradePerson
             {
                 Name = person.Name,
                 GradeLetter = grade.GradeLetter
